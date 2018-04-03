@@ -9,6 +9,7 @@ from openprocurement.contracting.core.models import (
     IContract, IsoDateTimeType,
     Contract as BaseContract, Document as BaseDocument
 )
+from openprocurement.api.utils import get_now
 from openprocurement.api.models import (
     plain_role, schematics_default_role,
     Value, Period, Model, ListType, DecimalType
@@ -89,8 +90,8 @@ class Milestone(Model):
     """ Contract Milestone """
 
     id = MD5Type(required=True, default=lambda: uuid4().hex)
-    date = IsoDateTimeType()
-    dateModified = IsoDateTimeType()
+    date = IsoDateTimeType(default=get_now().isoformat())
+    dateModified = IsoDateTimeType(default=get_now().isoformat())
     description = StringType()
     period = ModelType(Period)
     sequenceNumber = IntType(required=True)
@@ -106,17 +107,14 @@ class Milestone(Model):
     )
     title = StringType()
 
-    def validate_amountPaid(self, data, value):
-        pass
-
 
 @implementer(IESCOContract)
 class Contract(BaseContract):
     """ ESCO Contract """
 
-    contractType = StringType(choices=['common', 'esco'], default='esco')
+    contractType = StringType(default='esco')
     fundingKind = StringType(choices=['budget', 'other'], default='other')
-    milesones = ListType(ModelType(Milestone), default=list())
+    milestones = ListType(ModelType(Milestone), default=list())
     minValue = ModelType(Value, required=True)
     NBUdiscountRate = FloatType(required=True, min_value=0, max_value=0.99)
     noticePublicationDate = IsoDateTimeType()
@@ -129,7 +127,7 @@ class Contract(BaseContract):
             'create': contract_create_role + whitelist('NBUdiscountRate', 'noticePublicationDate', 'yearlyPaymentsPercentageRange', 'minValue'),
             'edit_active': contract_edit_role,
             'edit_terminated': whitelist(),
-            'view': contract_view_role + whitelist('NBUdiscountRate'),
+            'view': contract_view_role + whitelist('NBUdiscountRate', 'contractType', 'milestones'),
             'Administrator': contract_administrator_role,
             'default': schematics_default_role,
         }

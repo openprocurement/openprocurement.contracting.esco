@@ -23,31 +23,6 @@
       "locality": ""
     }
   },
-  "documents": [
-    {
-      "hash": "md5:72ceddef8e88528954778d6ad02dbc17",
-      "language": "uk",
-      "format": "application/pdf",
-      "url": "https://public.docs.openprocurement.org/get/ce6a2e19c22948c8ac75c7569042d1d1?KeyID=52462340&Signature=4zt1SvLc%252Bw2CvU%252ByJ6Q3JcYdUv3LTqrjcK4ve8LH07N1fZtUGcMQ6yTSdHIDtOnfMY02mz09xc9yk1lNixzTAQ%253D%253D",
-      "title": "договір17.pdf",
-      "documentOf": "tender",
-      "datePublished": "2018-03-29T19:16:53.281259+03:00",
-      "documentType": "contractSigned",
-      "dateModified": "2018-03-29T19:16:53.281276+03:00",
-      "id": "ba4f994e65764ef1b546f5b6dab786ec"
-    },
-    {
-      "hash": "md5:c17a1ac12e4407671e0ee0f621805c2f",
-      "language": "uk",
-      "format": "application/pkcs7-signature",
-      "url": "https://public.docs.openprocurement.org/get/cb700710a7a1434b8664205de5fe9d65?KeyID=52462340&Signature=Ft3m5qfTWyUOKngAsXSFyzI9WwKibNlow6DKkYAOAoD9ECS%252BCTVRqwPrR7U0KMCNi5vHi8GuyOw2uJRJLZvbDw%253D%253D",
-      "title": "sign.p7s",
-      "documentOf": "tender",
-      "datePublished": "2018-03-29T19:20:35.451117+03:00",
-      "dateModified": "2018-03-29T19:20:35.451145+03:00",
-      "id": "b3fbb1c6ca664361b63a53b1e54a8354"
-    }
-  ],
   "description": "",
   "title": "Енергосервіс будівлі Комунальної установи Сумська загальноосвітня школа І-ІІІ ступенів № 26 м.Суми, Сумсбкої області",
   "items": [

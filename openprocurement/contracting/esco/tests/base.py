@@ -2,12 +2,15 @@
 import os
 import json
 from copy import deepcopy
+from uuid import uuid4
 
-from openprocurement.contracting.core.tests.base import (
-   test_contract_data as base_test_contract_data,
-   documents,
-   BaseWebTest as BaseBaseWebTest
+from openprocurement.api.utils import get_now
+from openprocurement.contracting.api.tests.base import (
+    BaseWebTest as BaseBaseWebTest
 )
+
+from openprocurement.contracting.core.tests.base import documents
+
 
 NBU_DISCOUNT_RATE = 0.135
 
@@ -17,9 +20,11 @@ contract_data_json = "{}/data/test_contract_data.json".format(
 )
 with open(contract_data_json) as f:
     test_contract_data = json.loads(f.read())
+test_contract_data['id'] = uuid4().hex
 test_contract_data['contractType'] = 'esco'
 test_contract_data['NBUdiscountRate'] = NBU_DISCOUNT_RATE
 test_contract_data["yearlyPaymentsPercentageRange"] = 0.8
+test_contract_data["dateSigned"] = get_now().isoformat()
 # test_contract_data['value'] = {'yearlyPayments': 0.9,
 #                                'annualCostsReduction': 751.5,
 #                                'contractDuration': 10}

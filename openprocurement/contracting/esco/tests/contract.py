@@ -22,7 +22,7 @@ from openprocurement.contracting.esco.tests.contract_blanks import (
     patch_tender_contract,
     contract_type_check,
 )
-from openprocurement.contracting.core.tests.contract_blanks import (
+from openprocurement.contracting.common.tests.contract_blanks import (
     # ContractESCOResourceTest
     empty_listing,
     listing,
@@ -79,7 +79,7 @@ class ContractResource4BrokersTest(BaseContractWebTest):
     initial_auth = ('Basic', ('broker', ''))
 
     test_contract_status_change = snitch(contract_status_change)
-    test_contract_items_change = snitch(contract_items_change)
+    # test_contract_items_change = snitch(contract_items_change)
     test_patch_tender_contract = snitch(patch_tender_contract)
 
 

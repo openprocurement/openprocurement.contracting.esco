@@ -10,7 +10,7 @@ from openprocurement.contracting.esco.tests.base import (
     BaseContractContentWebTest,
     test_contract_data
 )
-from openprocurement.contracting.core.tests.change_blanks import (
+from openprocurement.contracting.common.tests.change_blanks import (
     # ContractNoItemsChangeTest
     no_items_contract_change,
     # ContractChangesResourceTest
