@@ -1,0 +1,92 @@
+ {
+     "status": "pending",
+     "contractType": "esco",
+     "items": [
+         {
+             "description": "футляри до державних нагород",
+             "classification": {
+                 "scheme": "ДК021",
+                 "description": "Cartons",
+                 "id": "44617100-9"
+             },
+             "description_en": "Cases for state awards",
+             "additionalClassifications": [
+                 {
+                     "scheme": "ДКПП",
+                     "id": "17.21.1",
+                     "description": "папір і картон гофровані, паперова й картонна тара"
+                 }
+             ],
+             "deliveryAddress": {
+                 "postalCode": "79000",
+                 "countryName": "Україна",
+                 "streetAddress": "вул. Банкова 1",
+                 "region": "м. Київ",
+                 "locality": "м. Київ"
+             },
+             "id": "e6354f7ee81f475ea2039d334547d432",
+             "unit": {
+                 "code": "44617100-9",
+                 "name": "item"
+             }
+         }
+     ],
+     "suppliers": [
+         {
+             "contactPoint": {
+                 "name": "Державне управління справами",
+                 "telephone": "0440000000"
+             },
+             "identifier": {
+                 "scheme": "UA-EDR",
+                 "id": "00037256",
+                 "uri": "http://www.dus.gov.ua/"
+             },
+             "name": "Державне управління справами",
+             "address": {
+                 "postalCode": "01220",
+                 "countryName": "Україна",
+                 "streetAddress": "вул. Банкова, 11, корпус 1",
+                 "region": "м. Київ",
+                 "locality": "м. Київ"
+             }
+         }
+     ],
+     "value": {
+         "yearlyPaymentsPercentage": "0.9",
+         "amountPerformance": "94.8",
+         "currency": "UAH",
+         "amount": "924.41",
+         "contractDuration": {
+             "days": 10,
+             "years": 10
+         },
+         "valueAddedTaxIncluded": true,
+         "annualCostsReduction": [
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2",
+             "1E+2"
+         ]
+     },
+     "awardID": "eb38a88967ea48e0a4bb26532009aa67",
+     "id": "8cb3a4e9d86646469ee3457fafa82624",
+     "contractID": "UA-2018-03-30-000001-1"
+ }
