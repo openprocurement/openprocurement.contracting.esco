@@ -8,7 +8,8 @@ from openprocurement.api.utils import (
 )
 from openprocurement.api.validation import validate_data
 from openprocurement.contracting.esco.models import Milestone
-from openprocurement.contracting.esco.constants import ACCELERATOR, DAYS_PER_YEAR
+from openprocurement.contracting.esco.constants import DAYS_PER_YEAR
+from openprocurement.contracting.esco.utils import update_delta
 
 
 # milestones
@@ -163,8 +164,7 @@ def validate_update_contract_end_date(request):
                                      "it is less than pending milestone startDate")
 
             delta = timedelta(days=DAYS_PER_YEAR * 15)
-            if contract.mode and contract.mode == 'test':
-                delta = timedelta(seconds=delta.total_seconds() / ACCELERATOR)
+            delta = update_delta(delta, contract)
             contract_max_end_date = contract.period.startDate + delta
             if contract_period_end_date > contract_max_end_date:
                 raise_operation_error(request, "Contract period cannot be over 15 years")

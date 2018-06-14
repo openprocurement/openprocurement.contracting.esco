@@ -5,10 +5,12 @@ from uuid import uuid4
 from datetime import timedelta
 
 from mock import patch
+from munch import munchify
 
 from openprocurement.api.utils import get_now
-from openprocurement.contracting.esco.constants import ACCELERATOR, DAYS_PER_YEAR
+from openprocurement.contracting.esco.constants import DAYS_PER_YEAR
 from openprocurement.contracting.esco.models import Contract
+from openprocurement.contracting.esco.utils import update_delta
 
 
 # ContractTest
@@ -329,8 +331,7 @@ def patch_tender_contract(self):
     self.assertEqual(response.json['data']['status'], 'pending')
 
     delta = timedelta(days=DAYS_PER_YEAR)
-    if 'mode' in self.initial_data and self.initial_data['mode'] == u'test':
-        delta = timedelta(seconds=delta.total_seconds() / ACCELERATOR)
+    delta = update_delta(delta, munchify(self.initial_data))
     new_end_date = end_date + delta
     contract_period['endDate'] = new_end_date.isoformat()
     response = self.app.patch_json('/contracts/{}?acc_token={}'.format(
@@ -360,8 +361,7 @@ def patch_tender_contract(self):
     #  now change endDate back for year to hide milestone to spare
     #  and check amount and amountPaid are decreased
     delta = timedelta(days=DAYS_PER_YEAR)
-    if 'mode' in self.initial_data and self.initial_data['mode'] == u'test':
-        delta = timedelta(seconds=delta.total_seconds() / ACCELERATOR)
+    delta = update_delta(delta, munchify(self.initial_data))
     new_end_date = new_end_date - delta
     contract_period['endDate'] = new_end_date.isoformat()
 
@@ -425,8 +425,7 @@ def patch_tender_contract_period(self):
 
     # contract period endDate = pending milestone startDate - timedelta days = 1
     delta = timedelta(days=1)
-    if 'mode' in self.initial_data and self.initial_data['mode'] == u'test':
-        delta = timedelta(seconds=delta.total_seconds() / ACCELERATOR)
+    delta = update_delta(delta, munchify(self.initial_data))
     contract_period['endDate'] = (milestone_startDate - delta).isoformat()
 
     response = self.app.patch_json('/contracts/{}?acc_token={}'.format(
@@ -457,8 +456,7 @@ def patch_tender_contract_period(self):
 
     # contract period endDate == pending milestone startDate
     delta = timedelta(days=1)
-    if 'mode' in self.initial_data and self.initial_data['mode'] == u'test':
-        delta = timedelta(seconds=delta.total_seconds() / ACCELERATOR)
+    delta = update_delta(delta, munchify(self.initial_data))
     contract_period['endDate'] = (milestone_startDate - delta).isoformat()
 
     response = self.app.patch_json('/contracts/{}?acc_token={}'.format(
@@ -492,8 +490,7 @@ def patch_tender_contract_period(self):
     temp_startDate = contract_period['startDate']
     contract_period['endDate'] = milestone_startDate.isoformat()
     delta = timedelta(days=1)
-    if 'mode' in self.initial_data and self.initial_data['mode'] == u'test':
-        delta = timedelta(seconds=delta.total_seconds() / ACCELERATOR)
+    delta = update_delta(delta, munchify(self.initial_data))
     contract_period['startDate'] = (parse_date(contract_period['endDate']) - delta).isoformat()
 
     response = self.app.patch_json('/contracts/{}?acc_token={}'.format(
@@ -522,8 +519,7 @@ def patch_tender_contract_period(self):
 
     # change endDate +2 days only, no years
     delta = timedelta(days=2)
-    if 'mode' in self.initial_data and self.initial_data['mode'] == u'test':
-        delta = timedelta(seconds=delta.total_seconds() / ACCELERATOR)
+    delta = update_delta(delta, munchify(self.initial_data))
     contract_period['endDate'] = (parse_date(contract_period['endDate']) + delta).isoformat()
 
     response = self.app.patch_json('/contracts/{}?acc_token={}'.format(
@@ -558,8 +554,7 @@ def patch_tender_contract_period(self):
 
     #  test change endDate of contract is 15 years from startDate
     delta = timedelta(days=DAYS_PER_YEAR * count_sheduled_milestones)
-    if 'mode' in self.initial_data and self.initial_data['mode'] == u'test':
-        delta = timedelta(seconds=delta.total_seconds() / ACCELERATOR)
+    delta = update_delta(delta, munchify(self.initial_data))
     contract_period_end_date = contract_period_start_date + delta
 
     contract_period['endDate'] = contract_period_end_date.isoformat()
@@ -577,8 +572,7 @@ def patch_tender_contract_period(self):
 
     #  test shrinking last milestone for 3 days
     delta = timedelta(days=DAYS_PER_YEAR * count_sheduled_milestones) - timedelta(days=3)
-    if 'mode' in self.initial_data and self.initial_data['mode'] == u'test':
-        delta = timedelta(seconds=delta.total_seconds() / ACCELERATOR)
+    delta = update_delta(delta, munchify(self.initial_data))
     contract_period_end_date = contract_period_start_date + delta
 
     contract_period['endDate'] = contract_period_end_date.isoformat()
@@ -596,8 +590,7 @@ def patch_tender_contract_period(self):
     #  test for shrinking milestones, for 4 years
     count_sheduled_milestones -= 4
     delta = timedelta(days=DAYS_PER_YEAR * count_sheduled_milestones)
-    if 'mode' in self.initial_data and self.initial_data['mode'] == u'test':
-        delta = timedelta(seconds=delta.total_seconds() / ACCELERATOR)
+    delta = update_delta(delta, munchify(self.initial_data))
     contract_period_end_date = contract_period_start_date + delta
     contract_period['endDate'] = contract_period_end_date.isoformat()
 

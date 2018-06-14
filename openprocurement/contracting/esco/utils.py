@@ -12,7 +12,7 @@ from functools import partial
 from openprocurement.api.traversal import get_item
 from openprocurement.api.utils import error_handler
 from openprocurement.contracting.api.traversal import Root
-from openprocurement.contracting.esco.constants import ACCELERATOR, DAYS_PER_YEAR
+from openprocurement.contracting.esco.constants import ACCELERATOR_RE, DAYS_PER_YEAR
 
 from esculator.calculations import discount_rate_days, payments_days, calculate_payments
 
@@ -47,20 +47,32 @@ def to_decimal(fraction):
 
 
 def generate_milestones(contract):
+    accelerator = 0
+    if 'procurementMethodDetails' in contract:
+        re_obj = ACCELERATOR_RE.search(contract['procurementMethodDetails'])
+        if re_obj and 'accelerator' in re_obj.groupdict():
+            accelerator = int(re_obj.groupdict()['accelerator'])
+
     npv_calculation_duration = 20
     announcement_date = parse_date(contract['noticePublicationDate'])
 
     contract_days = timedelta(days=contract['value']['contractDuration']['days'])
     contract_years = timedelta(days=contract['value']['contractDuration']['years'] * DAYS_PER_YEAR)
-    if not 'period' in contract or ('mode' in contract and contract['mode'] == 'test'):
+    date_signed = parse_date(contract['dateSigned'])
+    signed_delta = date_signed - announcement_date
+    if 'period' not in contract or ('mode' in contract and contract['mode'] == 'test'):
         contract_end_date = announcement_date + contract_years + contract_days
+        if accelerator:
+            real_date_signed = announcement_date + timedelta(seconds=signed_delta.total_seconds() * accelerator)
+            contract['dateSigned'] = real_date_signed.isoformat()
+
         contract['period'] = {
             'startDate': contract['dateSigned'],
             'endDate': contract_end_date.isoformat()
         }
 
     # set contract.period.startDate to contract.dateSigned if missed
-    if not 'startDate' in contract['period']:
+    if 'startDate' not in contract['period']:
         contract['period']['startDate'] = contract['dateSigned']
 
     contract_start_date = parse_date(contract['period']['startDate'])
@@ -132,16 +144,14 @@ def generate_milestones(contract):
         milestone['title'] = title
         milestone['description'] = title
         milestones.append(milestone)
-    if 'mode' in contract and contract['mode'] == 'test':
-        accelerate_milestones(milestones, DAYS_PER_YEAR, ACCELERATOR)
-        # accelerate contract.dateSigned
-        date_signed = parse_date(contract['dateSigned'])
-        signed_delta = date_signed - announcement_date
-        date_signed = announcement_date + timedelta(seconds=signed_delta.total_seconds() / ACCELERATOR)
+    if accelerator:
+        accelerate_milestones(milestones, DAYS_PER_YEAR, accelerator)
+        # restore accelerated contract.dateSigned
+
         contract['dateSigned'] = date_signed.isoformat()
         # accelerate contract.period.endDate
         delta = contract_days + contract_years
-        contract_end_date = announcement_date + timedelta(seconds=delta.total_seconds() / ACCELERATOR)
+        contract_end_date = announcement_date + timedelta(seconds=delta.total_seconds() / accelerator)
         contract['period'] = {
             'startDate': contract['dateSigned'],
             'endDate': contract_end_date.isoformat()
@@ -212,8 +222,7 @@ def update_milestones_dates_and_statuses(request):
                     milestones[number+1].period.startDate.isoformat()
             else:
                 delta = timedelta(days=DAYS_PER_YEAR*15)
-                if contract.mode and contract.mode == 'test':
-                    delta = timedelta(seconds=delta.total_seconds() / ACCELERATOR)
+                delta = update_delta(delta, contract)
                 target_milestones[number]['period']['endDate'] = (contract.period.startDate + delta).isoformat()
         # shrink milestone period endDate
         if target_milestones[number]['period']['startDate']\
@@ -235,3 +244,19 @@ def update_milestones_dates_and_statuses(request):
                         target_milestones[number]['status'] = 'scheduled'
 
     request.validated['data']['milestones'] = target_milestones
+
+
+def update_delta(delta, contract):
+    """
+    Update delta, we need this function for testing. To shrink dates.
+
+    :param delta
+    :param contract
+    :return: delta
+    :rtype: timedelta
+    """
+    if 'procurementMethodDetails' in contract and contract.procurementMethodDetails:
+            re_obj = ACCELERATOR_RE.search(contract.procurementMethodDetails)
+            if re_obj and 'accelerator' in re_obj.groupdict():
+                return timedelta(seconds=delta.total_seconds() / int(re_obj.groupdict()['accelerator']))
+    return delta

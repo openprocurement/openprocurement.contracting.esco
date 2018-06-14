@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta
-from openprocurement.contracting.esco.constants import ACCELERATOR
+
+from munch import munchify
+
 from openprocurement.api.utils import get_now
+from openprocurement.contracting.esco.utils import update_delta
 
 
 def listing_milestones(self):
@@ -595,8 +598,7 @@ def patch_milestones_status_change(self):
 
     # Don't allow change period
     many_days = timedelta(days=2000)
-    if 'mode' in self.initial_data and self.initial_data['mode'] == u'test':
-        many_days = timedelta(seconds=many_days.total_seconds() / ACCELERATOR)
+    many_days = update_delta(many_days, munchify(self.initial_data))
     end_date = (get_now() + many_days).isoformat()
 
     response = self.app.patch_json(

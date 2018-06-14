@@ -7,6 +7,7 @@ from datetime import timedelta
 
 from mock import patch
 
+from openprocurement.api.constants import SANDBOX_MODE
 from openprocurement.api.utils import get_now
 from openprocurement.contracting.api.tests.base import (
     BaseWebTest as BaseBaseWebTest
@@ -33,6 +34,9 @@ days = test_contract_data["value"]["contractDuration"]["days"]
 years = test_contract_data["value"]["contractDuration"]["years"]
 contractEndDate = now.replace(year=now.year + years) + timedelta(days=days)
 test_contract_data["period"]["endDate"] = contractEndDate.isoformat()
+
+if SANDBOX_MODE:
+    test_contract_data['procurementMethodDetails'] = 'quick, accelerator=1440'
 
 test_contract_data['milestones'] = generate_milestones(test_contract_data)
 

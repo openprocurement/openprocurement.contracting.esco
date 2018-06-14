@@ -10,6 +10,7 @@ requires = [
 test_requires = requires + [
     'webtest',
     'python-coveralls',
+    'munch',
 ]
 docs_requires = requires + [
     'sphinxcontrib-httpdomain',
